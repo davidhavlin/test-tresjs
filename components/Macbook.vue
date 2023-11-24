@@ -49,6 +49,7 @@ function animateMacbook() {
 
 const animateVideoProgress = (videoEl: HTMLVideoElement) => {
   const tlDuration = tl?.totalDuration()
+  console.log('', { tlDuration, videoDur: videoEl.duration })
 
   return gsap.fromTo(
     videoEl,
