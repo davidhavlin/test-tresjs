@@ -1,6 +1,12 @@
 <script lang="ts" setup>
 import { gsap } from 'gsap'
-import { Group, SRGBColorSpace, VideoTexture } from 'three'
+import {
+  Color,
+  Group,
+  MeshBasicMaterial,
+  SRGBColorSpace,
+  VideoTexture
+} from 'three'
 
 defineExpose({
   animateMacbook
@@ -12,6 +18,8 @@ const { scene, nodes, materials } = await useGLTF('/mac-draco.glb', {
 
 const group = ref<Group | null>(null)
 const video = ref<HTMLVideoElement | null>(null)
+const screenMaterial = ref<MeshBasicMaterial>(null!)
+
 let tl: gsap.core.Timeline | null = null
 
 const groupHinge = ref<Group | null>(null)
@@ -20,7 +28,7 @@ const initialCoords = { position: [0, -6, 10], rotation: [0.2, 0.5, 0] } as any
 const initialHingeXRotation = -0.3
 
 function animateMacbook() {
-  const mats = Object.values(materials)
+  const mats = [...Object.values(materials), screenMaterial.value]
   const position = group.value!.position
   const rotation = group.value!.rotation
   const hingeRotation = groupHinge.value!.rotation
@@ -51,7 +59,8 @@ const animateVideoProgress = (videoEl: HTMLVideoElement) => {
 
 const replaceScreenWithVideo = () => {
   video.value = document.createElement('video')
-  video.value.src = '/tools-homepage.mp4'
+  // video.value.src = '/tools-homepage.mp4'
+  video.value.src = '/output2.mp4'
   video.value.loop = true
   video.value.muted = true
   video.value.autoplay = true
@@ -65,12 +74,22 @@ const replaceScreenWithVideo = () => {
   texture.colorSpace = SRGBColorSpace
   texture.flipY = false
 
+  screenMaterial.value.map = texture
+
   // @ts-ignore
   materials['screen.001'].map = texture
-  console.log('', materials['screen.001'])
   // materials['screen.001'].roughness = 0
   // materials['screen.001'].metalness = 0.5
   materials['screen.001'].needsUpdate = true
+}
+
+const setShadows = () => {
+  scene.traverse((child: any) => {
+    if (child.isMesh) {
+      child.castShadow = true
+      child.receiveShadow = true
+    }
+  })
 }
 
 const setMaterialsTransparentable = () => {
@@ -81,6 +100,7 @@ const setMaterialsTransparentable = () => {
 
 onMounted(() => {
   replaceScreenWithVideo()
+  setShadows()
   setMaterialsTransparentable()
 })
 </script>
@@ -91,7 +111,6 @@ onMounted(() => {
       ref="groupHinge"
       :rotation-x="initialHingeXRotation"
       :position="[0, -0.04, 0.41]"
-      cast-shadow
     >
       <TresGroup :position="[0, 2.96, -0.13]" :rotation="[Math.PI / 2, 0, 0]">
         <TresMesh
@@ -102,10 +121,13 @@ onMounted(() => {
           :material="materials['matte.001']"
           :geometry="nodes['Cube008_1'].geometry"
         />
-        <TresMesh
+        <!-- <TresMesh
           :material="materials['screen.001']"
           :geometry="nodes['Cube008_2'].geometry"
-        />
+        /> -->
+        <TresMesh :geometry="nodes['Cube008_2'].geometry">
+          <TresMeshBasicMaterial ref="screenMaterial" transparent />
+        </TresMesh>
       </TresGroup>
     </TresGroup>
     <TresMesh
