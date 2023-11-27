@@ -63,12 +63,23 @@ const replaceScreenWithVideo = () => {
   // video.value.src = '/tools-homepage.mp4'
   video.value.src = '/output2.mp4'
   video.value.loop = true
+  video.value.preload = 'auto'
   video.value.muted = true
   video.value.autoplay = true
+  video.value.load()
   video.value.pause()
 
   video.value.addEventListener('loadeddata', () => {
     tl?.add(animateVideoProgress(video.value!), 'start')
+  })
+  video.value.addEventListener('load', () => {
+    console.log('', 'load')
+  })
+  video.value.addEventListener('canplaythrough', () => {
+    console.log('', 'canplaythrough')
+  })
+  video.value.addEventListener('loadedmetadata', () => {
+    console.log('', 'loadedmetadata')
   })
 
   const texture = new VideoTexture(video.value)
