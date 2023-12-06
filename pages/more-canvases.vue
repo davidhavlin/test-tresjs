@@ -1,6 +1,9 @@
 <template>
-  <div class="flex flex-col items-center gap-20 py-100">
-    <section v-for="item in scenes" class="h-600px w-80vw relative">
+  <div class="flex flex-col items-center gap-10 pt-40 py-100">
+    <section
+      v-for="item in scenes"
+      class="h-600px w-full max-w-1400px relative"
+    >
       <CanvasScene
         :gl="item.gl"
         :model="item.model"
