@@ -6,7 +6,7 @@ gsap.registerPlugin(ScrollTrigger)
 
 <template>
   <div class="">
-    <ul>
+    <ul class="fixed right-0 top-0 fw-700 z-100 text-yellow">
       <li>
         <NuxtLink to="/macbook">Macbook</NuxtLink>
       </li>

@@ -44,7 +44,7 @@ onMounted(createAnimation)
 </script>
 
 <template>
-  <div ref="container" class="container">
+  <div ref="container" class="h-200vw w-full flex justify-center text-white">
     <h1 ref="title" class="title">
       The next phase of our cooperation was a detailed processing of all desktop
       screens
